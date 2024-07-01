@@ -7,26 +7,34 @@ logging.basicConfig(level=logging.INFO)
 
 @app.route('/', methods=['GET', 'POST'])
 def handle_request():
+    target_url = None
+    print("HI1")
     data = request.json
+    print("data:", data)
     if data and 'RedirectingServerTo' in data:
         target_url = data['RedirectingServerTo']
-        
-        # Extract the original data without "RedirectingServerTo"
+
+        print("HI2", target_url)
+
         forwarded_data = {k: v for k, v in data.items() if k != 'RedirectingServerTo'}
         
         # Extract headers and cookies
-        headers = dict(request.headers)
+        headers = {
+            'User-Agent': request.headers.get('User-Agent', ''),
+            'Accept': request.headers.get('Accept', '')
+        }
         cookies = request.cookies
         
-        # Remove Host header to avoid potential issues
-        headers.pop('Host', None)
-        
+        print("OK")
+
         try:
             if request.method == 'POST':
-                response = requests.post(target_url, json=forwarded_data, headers=headers, cookies=cookies)
+                print("POST")
+                response = requests.post(target_url, json=forwarded_data, headers=headers, cookies=cookies, timeout=10)
             else:
-                response = requests.get(target_url, params=forwarded_data, headers=headers, cookies=cookies)
-            
+                print("ELSE", target_url, forwarded_data, headers, cookies)
+                response = requests.get(str(target_url), params=forwarded_data, headers=headers, cookies=cookies, timeout=10)
+                
             # Create a Flask response with the response from the target server
             flask_response = make_response(response.content, response.status_code)
             
