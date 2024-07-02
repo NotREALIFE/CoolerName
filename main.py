@@ -5,7 +5,7 @@ import logging
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 
-@app.route('/', methods=['POST'])
+@app.route('/', methods=['POST', "GET"])
 def handle_request():
     target_url = None
     data = request.json
