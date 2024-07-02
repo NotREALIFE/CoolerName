@@ -1,6 +1,7 @@
 from flask import Flask, request, make_response
 import requests
 import logging
+import os
 
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -16,6 +17,8 @@ def handle_request():
         
         headers = {key: value for key, value in request.headers.items() if key != 'Host'}
         cookies = request.cookies
+        
+        headers["Authorization"] = "Bot " + os.environ.get("TOKEN")
         
         try:
             if request.method == 'POST':
