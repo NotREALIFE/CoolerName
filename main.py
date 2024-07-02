@@ -18,7 +18,7 @@ def handle_request():
         headers = {key: value for key, value in request.headers.items() if key != 'Host'}
         cookies = request.cookies
         
-        headers["Authorization"] = "Bot " + os.environ.get("TOKEN")
+        headers["Authorization"] = "Bot " + str(os.environ.get("TOKEN"))
         
         try:
             if request.method == 'POST':
